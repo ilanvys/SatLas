@@ -1,0 +1,27 @@
+body {
+  box-sizing: border-box;
+}
+
+#background {
+  background: linear-gradient(124.78deg, #C4C4C4 8.48%, rgba(196, 196, 196, 0) 98.17%) no-repeat top right;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+#header {
+  width: 50vw;
+  height: 7vw;
+  display: flex;
+  flex-direction: row;
+  cursor: default;
+  padding: 1.5vw 0 0 1.5vw;
+}
+
+#header img {
+  width: 7vw;
+  height: 7vw;
+}
+
