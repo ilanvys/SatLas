@@ -25,3 +25,11 @@ body {
   height: 7vw;
 }
 
+.leaflet-container {
+  height: 70vh;
+  width: 80vw;
+  top: 4vh;
+  margin: auto;
+  box-shadow: 0 15px 16px 0 rgba(0, 0, 0, 0.5), 0 12px 40px 0 rgba(0, 0, 0, 0.49);
+}
+
