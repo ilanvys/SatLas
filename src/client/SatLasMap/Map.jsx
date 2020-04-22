@@ -5,6 +5,8 @@ import {
   TileLayer,
 } from "react-leaflet";
 
+import { StateProvider } from "./MapStateContext";
+
 import "leaflet/dist/leaflet.css";
 
 const propTypes = {
@@ -72,10 +74,14 @@ class SatLasMap extends React.Component {
         style={currentStyle}
         className={className}
         center={[lat, lng]}
-        zoom={zoom}>
+        zoom={zoom}
+      >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <StateProvider>
+          {this.props.children}
+        </StateProvider>
       </Map>
     )
   }
