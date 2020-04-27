@@ -14,11 +14,21 @@ export default class App extends Component {
           <Map>
             <GeometryLayer name="hello">
               <Polygon
-                radius={5}
+                radius={2000}
                 center={[50, 0]}
                 attribution="hello"
               />
+              <Polygon
+                radius={2000}
+                center={[51, 0]}
+                attribution="hello"
+              />
             </GeometryLayer>
+            <Polygon
+              radius={2000}
+              center={[53, 0]}
+              attribution="hello"
+            />
           </Map>
         </div>
       </div>
