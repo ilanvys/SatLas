@@ -23,6 +23,9 @@ const reducer = (currentState, action) => {
       }
       return state;
     case REMOVE_LAYER:
+      if (!layer) {
+        throw new Error(`Given layer doesn't exist: '${layerName}'`);
+      }
       delete state.layers[layerName];
       return state;
     case ADD_TO_LAYER:
@@ -30,6 +33,7 @@ const reducer = (currentState, action) => {
         layer.childrenCount += 1;
         return state;
       }
+      // In case the child was rendered first, the layer should be initialized
       state.layers[layerName] = initialLayer;
       state.layers[layerName].childrenCount = 1;
       return state;
