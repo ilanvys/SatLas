@@ -10,18 +10,22 @@ const SatLasPolygon = props => {
     layerName
   } = props;
 
+  const isInLayer = !!layerName;
+
   const [state, actions] = useStateContext();
 
   useEffect(() => {
-    actions.addToLayer(layerName);
+    if (isInLayer) {
+      actions.addToLayer(layerName);
 
-    return () => {
-      actions.removeFromLayer(layerName);
+      return () => {
+        actions.removeFromLayer(layerName);
+      }
     }
   }, []);
 
   return (
-    <Circle {...props}/>
+    <Circle onClick={() => actions.setLayerShow(layerName, false)} {...props}/>
   )
 }
 
