@@ -33,3 +33,32 @@ body {
   box-shadow: 0 15px 16px 0 rgba(0, 0, 0, 0.5), 0 12px 40px 0 rgba(0, 0, 0, 0.49);
 }
 
+#side-bar {
+  height: auto;
+  width: 15vw;
+  background-color: wheat;
+  padding: 1vw;
+}
+#side-bar input {
+  width: 12vw;
+}
+
+/* div.map.leaflet-container.leaflet-touch.leaflet-retina.leaflet-fade-anim {
+  z-index: 1;
+}
+
+div.slide-pane__content {
+  z-index: 100;
+}
+
+div.ReactModal__Content.ReactModal__Content--after-open.slide-pane.slide-pane_from_right.some-custom-class {
+  z-index: 100;
+}
+
+div.slide-pane__header {
+  z-index: 100;
+}
+
+div.ReactModal__Overlay.ReactModal__Overlay--after-open.slide-pane__overlay.some-custom-overlay-class {
+  z-index: 100;
+} */
