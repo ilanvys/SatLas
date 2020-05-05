@@ -1,9 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useReducer } from 'react';
 import {
   Marker,
   Popup
-} from "react-leaflet"
-import L from "leaflet"
+} from 'react-leaflet'
+import L from 'leaflet'
+import { 
+  initalMarkerList, 
+  markerReducer, 
+  markerActions
+ } from './Reducers/MarkersReducer'
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -13,19 +18,21 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 })
 
-const MarkersList = props => {
-  return (
-    props.markers.map(marker => {
+const MarkersList = () => {
+  const [markers, dispach] = useReducer(markerReducer, initalMarkerList)
+
+  return (<div>
+    {markers.map(marker => {
       return <Marker                 
-        key={marker.first}
-        position={[marker.first, marker.second]} 
-        name="hi">
+        key={marker.id}
+        position={[marker.longitude, marker.latitude]} 
+        name={`[${marker.longitude}, ${marker.latitude}]`}>
         <Popup>
-          <div onClick={() => props.handleRemoveMarkers()}>Click To Remove</div>
+          <div onClick={() => dispach(markerActions.removeMarker(marker.id))}>Click To Remove</div>
         </Popup>
       </Marker>
-    })
-  )
+    })}
+  </div>)
 }
 
-export default MarkersList;
+export default MarkersList

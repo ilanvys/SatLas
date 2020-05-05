@@ -1,44 +1,50 @@
-import React from "react";
+import React, {useReducer, useState} from "react";
 
 import Control from 'react-leaflet-control'
 
-import { useStateContext } from "./MapStateContext";
+import { 
+  initalMarkerList, 
+  markerReducer, 
+  markerActions,
+  MarkersContext
+ } from './Reducers/MarkersReducer'
 
-class SideBar extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      markerCoordinates: {
-        first: "",
-        second: ""
-      }
-    }
+const SideBar = () => {
+  const [markerCoordinates, setCoordinates] = useState({
+    longitude: '',
+    latitude: ''
+  })
 
-  }
-
-  handleTextChange = (coordinate, value) => {
-    this.setState({markerCoordinates: {
-      ...this.state.markerCoordinates,
-      [coordinate]: value
-    }})
-  }
-
-  render() {
-    return (
-      <Control position="topleft" >
-        <div id="side-bar">
-          <input type="text" onChange={(e) => this.handleTextChange('first', e.target.value)}/>
-          <input type="text" onChange={(e) => this.handleTextChange('second', e.target.value)}/>
-          <button onClick={() => this.props.handleAddMarker({
-            first: parseFloat(this.state.markerCoordinates.first), 
-            second: parseFloat(this.state.markerCoordinates.second)
-          })}>
-            Add Marker
-          </button>
-        </div>
-      </Control>
-    )
-  }
+  const [markers, dispach] = useReducer(markerReducer, initalMarkerList)
+  
+  return (<Control position="topleft" >
+    <div id="side-bar">
+    <input type='text' 
+        value={markerCoordinates.longitude}
+        onChange={e => setCoordinates({
+            ...markerCoordinates,
+            longitude: e.target.value
+        })}
+      />
+      <input type='text' 
+        value={markerCoordinates.latitude}
+        onChange={e => setCoordinates({
+            ...markerCoordinates,
+            latitude: e.target.value
+        })}
+      />
+        <button onClick={() => {
+          dispach({
+          type: 'ADD_MARKER',
+          payload: {
+            longitude: markerCoordinates.longitude,
+            latitude: markerCoordinates.latitude
+          }})
+        }}>
+        Add Marker
+      </button>
+    </div>
+  </Control>)
 }
-
+ 
 export default SideBar;
