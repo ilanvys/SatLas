@@ -1,14 +1,10 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {
   Marker,
   Popup
 } from 'react-leaflet'
 import L from 'leaflet'
-import { 
-  initalMarkerList, 
-  markerReducer, 
-  markerActions
- } from './Reducers/MarkersReducer'
+import { StateContext } from "./MapStateContext";
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -19,16 +15,19 @@ L.Icon.Default.mergeOptions({
 })
 
 const MarkersList = () => {
-  const [markers, dispach] = useReducer(markerReducer, initalMarkerList)
+  const [state, actions] = useContext(StateContext)
+
+  useEffect(() => {
+  },[state.markers])
 
   return (<div>
-    {markers.map(marker => {
+    {state.markers.map(marker => {
       return <Marker                 
         key={marker.id}
         position={[marker.longitude, marker.latitude]} 
         name={`[${marker.longitude}, ${marker.latitude}]`}>
         <Popup>
-          <div onClick={() => dispach(markerActions.removeMarker(marker.id))}>Click To Remove</div>
+          <div onClick={() => actions.removeMarker(marker.id)}>Click To Remove</div>
         </Popup>
       </Marker>
     })}

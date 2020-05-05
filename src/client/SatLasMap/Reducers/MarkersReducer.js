@@ -1,12 +1,6 @@
 import _ from "lodash";
 
-export const initalMarkerList = [{
-  longitude: '11',
-  latitude: '11',
-  id: 1
-}]
-
-const markerReducer = (state, action) => {
+const markersReducer = (state, action) => {
   switch (action.type) {
     case 'ADD_MARKER':
         return [...state, {
@@ -28,7 +22,7 @@ const markerReducer = (state, action) => {
   }
 }
 
-const markerActions = dispatch => ({
+const markersActions = dispatch => ({
   addMarker: (longitude, latitude) => {
     dispatch({
       type: 'ADD_MARKER',
@@ -38,18 +32,19 @@ const markerActions = dispatch => ({
       }
     });
   },
-  removeMarker: (longitude, latitude) => {
+  removeMarker: (id) => {
     dispatch({
       type: 'REMOVE_MARKER',
       payload: {
-        longitude,
-        latitude
+        id
       }
-    });
-  },
+    })
+  }
 })
 
+export const markersReducerActionsList = ['ADD_MARKER', 'REMOVE_MARKER']
+
 export {
-  markerReducer,
-  markerActions,
+  markersReducer,
+  markersActions,
 }

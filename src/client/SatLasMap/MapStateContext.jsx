@@ -5,12 +5,16 @@ import { actions, reducer } from "./Reducers/MapReducer";
 
 const initialState = {
   layers: {},
-  markers: []
-};
+  markers: [{
+    longitude: 25,
+    latitude: 25,
+    id: 1
+  }] //Just as an example
+}
 
 export const StateContext = createContext([initialState, actions(_.noop)]);
 
-const  StateProvider = ({ children }) => {
+export const StateProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (

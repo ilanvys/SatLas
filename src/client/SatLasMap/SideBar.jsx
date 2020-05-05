@@ -1,13 +1,8 @@
-import React, {useReducer, useState} from "react";
+import React, { useState, useContext } from "react";
 
 import Control from 'react-leaflet-control'
+import { StateContext } from "./MapStateContext";
 
-import { 
-  initalMarkerList, 
-  markerReducer, 
-  markerActions,
-  MarkersContext
- } from './Reducers/MarkersReducer'
 
 const SideBar = () => {
   const [markerCoordinates, setCoordinates] = useState({
@@ -15,8 +10,8 @@ const SideBar = () => {
     latitude: ''
   })
 
-  const [markers, dispach] = useReducer(markerReducer, initalMarkerList)
-  
+  const [state, actions] = useContext(StateContext)
+
   return (<Control position="topleft" >
     <div id="side-bar">
     <input type='text' 
@@ -34,12 +29,9 @@ const SideBar = () => {
         })}
       />
         <button onClick={() => {
-          dispach({
-          type: 'ADD_MARKER',
-          payload: {
-            longitude: markerCoordinates.longitude,
-            latitude: markerCoordinates.latitude
-          }})
+          actions.addMarker(
+            parseFloat(markerCoordinates.longitude), 
+            parseFloat(markerCoordinates.latitude))
         }}>
         Add Marker
       </button>
