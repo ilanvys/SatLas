@@ -11,20 +11,6 @@ import MarkersList from "./MarkersList";
 
 import "leaflet/dist/leaflet.css";
 
-const addMarker = setState => coordinates => {
-  setState(state => ({
-    ...state,
-    markers: state.markers.concat(coordinates)
-  }));
-}
-
-const removeMarkers = setState => coordinates => {
-  setState(state => ({
-    ...state,
-    markers: []
-  }));
-}
-
 const handleResize = setState => () => {
   setState(state => {
     const { width, height, screenWidth } = state;
@@ -96,13 +82,8 @@ const SatLasMap = props => {
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <MarkersList
-        markers={markers}
-        handleRemoveMarkers={removeMarkers(setState)}
-      />
-      <SideBar
-        handleAddMarker={addMarker(setState)}
-      />
+      <MarkersList />
+      <SideBar />
       <LayersControl
         position="topright"
         collapsed={false}
