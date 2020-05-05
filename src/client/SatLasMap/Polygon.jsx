@@ -1,13 +1,28 @@
+import _ from "lodash";
 import React, { useEffect } from "react";
 import {
   Circle
-} from "react-leaflet"
+} from "react-leaflet";
+import PropTypes from "prop-types";
 
 import { useStateContext } from "./MapStateContext";
 
+const propTypes = {
+  layerName: PropTypes.string,
+  zoomOnClick: PropTypes.bool,
+  onClick: PropTypes.func
+};
+
+const defaultProps = {
+  zoomOnClick: false,
+  onClick: _.noop
+};
+
 const SatLasPolygon = props => {
   const {
-    layerName
+    layerName,
+    zoomOnClick,
+    onClick
   } = props;
 
   const isInLayer = !!layerName;
@@ -24,9 +39,19 @@ const SatLasPolygon = props => {
     }
   }, []);
 
+  const _onClick = () => {
+    if (zoomOnClick) {
+      actions.setCenterZoom();
+    }
+    onClick();
+  }
+
   return (
-    <Circle onClick={() => actions.setLayerShow(layerName, false)} {...props}/>
+    <Circle {...props} onClick={_onClick}/>
   )
 }
+
+SatLasPolygon.propTypes = propTypes;
+SatLasPolygon.defaultProps = defaultProps;
 
 export default SatLasPolygon;

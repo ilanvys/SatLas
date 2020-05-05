@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import {
   Map,
@@ -6,11 +6,41 @@ import {
   LayersControl,
 } from "react-leaflet";
 
-import { StateProvider } from "./MapStateContext";
 import SideBar from "./SideBar";
 import MarkersList from "./MarkersList";
 
 import "leaflet/dist/leaflet.css";
+
+const addMarker = setState => coordinates => {
+  setState(state => ({
+    ...state,
+    markers: state.markers.concat(coordinates)
+  }));
+}
+
+const removeMarkers = setState => coordinates => {
+  setState(state => ({
+    ...state,
+    markers: []
+  }));
+}
+
+const handleResize = setState => () => {
+  setState(state => {
+    const { width, height, screenWidth } = state;
+    if (!width || !height) {
+      return console.warn("[Warning] Width and height props need to be set in order to use 'responsive' map");
+    }
+
+    return {
+      ...state,
+      width: window.innerWidth / (screenWidth / width),
+      screenWidth: window.innerWidth,
+      screenHeight: window.innerHeight
+    }
+  });
+}
+
 
 const propTypes = {
   responsive: PropTypes.bool,
@@ -22,108 +52,69 @@ const defaultProps = {
   responsive: false
 };
 
-class SatLasMap extends React.Component {
-  constructor(props) {
-    super(props);
+const SatLasMap = props => {
+  const {
+    responsive,
+    className,
+    style,
+    children
+  } = props;
 
-    const {
-      width,
-      height
-    } = props;
+  const [state, setState] = useState({
+    lat: 50,
+    lng: 0,
+    zoom: 2,
+    width: props.width,
+    height: props.height,
+    screenWidth: window.innerWidth,
+    screenHeight: window.innerHeight,
+    markers: []
+  });
 
-    this.state = {
-      lat: 50,
-      lng: 0,
-      zoom: 2,
-      width,
-      height,
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight,
-      markers: []
+  useEffect(() => {
+    if (responsive) {
+      window.addEventListener("resize", handleResize(setState));
     }
 
-    this.addMarker = this.addMarker.bind(this)
-    this.removeMarkers = this.removeMarkers.bind(this)
-  }
-  
-  componentDidMount() {
-    if (this.props.responsive) {
-      window.addEventListener("resize", this.handleResize);
-    }
-  }
-  
-  componentWillUnmount() {
-    if (this.props.responsive) {
-      window.removeEventListener("resize", this.handleResize);
-    }
-  }
-  
-  handleResize = () => {
-    const { width, height } = this.state;
-    if (!width || !height) {
-      return console.warn("[Warning] Width and height props need to be set in order to use 'responsive' map");
-    }
-    
-    this.setState({
-      width: window.innerWidth / (this.state.screenWidth / width),
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight
-    })
-  }
-
-  addMarker = (coordinates) => {
-    this.setState(state => { 
-      const list = state.markers.concat(coordinates)
-      return {
-        markers: list
+    return () => {
+      if (responsive) {
+        window.removeEventListener("resize", handleResize(setState));
       }
-    })
-  }
-  
-  removeMarkers = (coordinates) => {
-    this.setState(state => { 
-      return {
-        markers: []
-      }
-    })
-  }
-  
-  render() {
-    const { width, height, lat, lng, zoom, markers } = this.state;
-    const { className, style } = this.props;
-    const currentStyle = !!width && !!height ? { ...style, width, height } : style;
-    return(
-      <Map
-        style={currentStyle}
-        className={className}
-        center={[lat, lng]}
-        zoom={zoom}
+    }
+  }, [])
+
+
+  const { width, height, lat, lng, zoom, markers } = state;
+  const currentStyle = !!width && !!height ? { ...style, width, height } : style;
+
+  return (
+    <Map
+      style={currentStyle}
+      className={className}
+      center={[lat, lng]}
+      zoom={zoom}
+    >
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      <MarkersList
+        markers={markers}
+        handleRemoveMarkers={removeMarkers(setState)}
+      />
+      <SideBar
+        handleAddMarker={addMarker(setState)}
+      />
+      <LayersControl
+        position="topright"
+        collapsed={false}
       >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <MarkersList 
-          markers={markers}  
-          handleRemoveMarkers={this.removeMarkers}
-        /> 
-        <StateProvider>
-          <SideBar 
-            handleAddMarker={this.addMarker}  
-          />
-          <LayersControl 
-            position="topright" 
-            collapsed={false}
-          >
-            <LayersControl.Overlay name="group1">
-              {this.props.children}
-            </LayersControl.Overlay>
-          </LayersControl>
-        </StateProvider>
-      </Map>
-    )
-  }
+        <LayersControl.Overlay name="group1">
+          {children}
+        </LayersControl.Overlay>
+      </LayersControl>
+    </Map>
+  )
 }
-
 
 SatLasMap.propTypes = propTypes;
 SatLasMap.defaultProps = defaultProps;
