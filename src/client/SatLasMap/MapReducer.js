@@ -1,54 +1,69 @@
 import _ from "lodash";
 
-const ADD_LAYER = "ADD_LAYER";
-const REMOVE_LAYER = "ADD_LAYER";
-const ADD_TO_LAYER = "ADD_TO_LAYER";
-const REMOVE_FROM_LAYER = "REMOVE_FROM_LAYER";
-const SET_LAYER_SHOW = "SET_LAYER_SHOW";
-
 const initialLayer = {
   childrenCount: 0,
   show: true
-};
+}
 
-const reducer = (currentState, action) => {
-  const state = _.cloneDeep(currentState);
-  const { layerName } = action;
-  const layer = state.layers[layerName];
+const reducer = (state, action) => {
+  const layerName = action.payload.layerName
+  const layerExist = state.layers[layerName]
 
   switch (action.type) {
-    case ADD_LAYER:
-      if (!layer) {
-        state.layers[layerName] = initialLayer;
+    case 'ADD_LAYER':
+        return {
+          ...state,
+          [layerName]: initialLayer
+        }
+    case 'REMOVE_LAYER':
+      let layers = _.cloneDeep(state.layers)
+      delete layers[layerName]
+      return {
+        ...state,
+        layers
       }
-      return state;
-    case REMOVE_LAYER:
-      if (!layer) {
-        throw new Error(`Given layer doesn't exist: '${layerName}'`);
-      }
-      delete state.layers[layerName];
-      return state;
-    case ADD_TO_LAYER:
-      if (!!layer) {
-        layer.childrenCount += 1;
-        return state;
+    case 'ADD_TO_LAYER':
+      if (!!layerExist) {
+        return {
+          ...state,
+          layers: {
+            ...state.layers,
+            [layerName]: {
+              ...state.layers[layerName],
+              childrenCount:  state.layers[layerName].childrenCount + 1
+            }
+          }
+        }
       }
       // In case the child was rendered first, the layer should be initialized
-      state.layers[layerName] = initialLayer;
-      state.layers[layerName].childrenCount = 1;
-      return state;
-    case REMOVE_FROM_LAYER:
-      if (!layer) {
-        throw new Error(`Given layer doesn't exist: '${layerName}'`);
+      let newLayer = _.cloneDeep(initialLayer)
+      newLayer.childrenCount = 1
+      return {
+        ...state,
+        [layerName]: newLayer
       }
-      layer.childrenCount -= 1;
-      return state;
-    case SET_LAYER_SHOW:
-      if (!layer) {
-        throw new Error(`Given layer doesn't exist: '${layerName}'`);
+    case 'REMOVE_FROM_LAYER':
+      return {
+        ...state,
+        layers: {
+          ...state.layers,
+          [layerName]: {
+            ...state.layers[layerName],
+            childrenCount:  state.layers[layerName].childrenCount - 1
+          }
+        }
       }
-      layer.show = action.show;
-      return state;
+    case 'SWITCH_LAYER_SHOW':
+      return {
+        ...state,
+        layers: {
+          ...state.layers,
+          [layerName]: {
+            ...state.layers[layerName],
+            show: !state.layers[layerName].show
+          }
+        }
+      }
     default:
       return state;
   }
@@ -57,33 +72,43 @@ const reducer = (currentState, action) => {
 const actions = dispatch => ({
   addLayer: layerName => {
     dispatch({
-      type: ADD_LAYER,
-      layerName
+      type: 'ADD_LAYER',
+      payload: {
+        layerName
+      }
     });
   },
   removeLayer: layerName => {
     dispatch({
-      type: REMOVE_LAYER,
-      layerName
+      type: 'REMOVE_LAYER',
+      payload: {
+        layerName
+      }
     });
   },
   addToLayer: layerName => {
     dispatch({
-      type: ADD_TO_LAYER,
-      layerName
+      type: 'ADD_TO_LAYER',
+      payload: {
+        layerName
+      }
     });
   },
   removeFromLayer: layerName => {
     dispatch({
-      type: REMOVE_FROM_LAYER,
-      layerName
+      type: 'REMOVE_FROM_LAYER',
+      payload: {
+        layerName
+      }
     });
   },
   setLayerShow: (layerName, show) => {
     dispatch({
-      type: SET_LAYER_SHOW,
-      layerName,
-      show
+      type: 'SWITCH_LAYER_SHOW',
+      payload: {
+        layerName,
+        show
+      }
     });
   }
 });
