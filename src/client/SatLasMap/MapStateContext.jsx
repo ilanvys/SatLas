@@ -1,15 +1,16 @@
 import _ from "lodash";
-import React, { createContext, useContext, useReducer } from "react";
+import React, { createContext, useReducer } from "react";
 
-import { actions, reducer } from "./MapReducer";
+import { actions, reducer } from "./Reducers/MapReducer";
 
 const initialState = {
-  layers: {}
+  layers: {},
+  markers: []
 };
 
-const StateContext = createContext([initialState, actions(_.noop)]);
+export const StateContext = createContext([initialState, actions(_.noop)]);
 
-const StateProvider = ({ children }) => {
+const  StateProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
@@ -17,12 +18,4 @@ const StateProvider = ({ children }) => {
       {children}
     </StateContext.Provider>
   )
-};
-
-const useStateContext = () => useContext(StateContext);
-
-export {
-  StateContext,
-  StateProvider,
-  useStateContext
 }

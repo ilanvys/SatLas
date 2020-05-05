@@ -68,7 +68,6 @@ const SatLasMap = props => {
     height: props.height,
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
-    markers: []
   });
 
   useEffect(() => {

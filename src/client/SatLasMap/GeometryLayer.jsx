@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import {
   LayerGroup
 } from "react-leaflet"
 import PropTypes from "prop-types";
 
-import { useStateContext } from "./MapStateContext";
+import { StateContext } from "./MapStateContext";
 
 const propTypes = {
   name: PropTypes.string,
@@ -22,7 +22,7 @@ const SatLasLayer = props => {
     show
   } = props;
 
-  const [state, actions] = useStateContext();
+  const [state, actions] = useContext(StateContext)
 
   const layerData = !!state.layers[name] ?
     state.layers[name]

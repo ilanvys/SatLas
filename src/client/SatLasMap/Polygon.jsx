@@ -1,11 +1,11 @@
 import _ from "lodash";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import {
   Circle
 } from "react-leaflet";
 import PropTypes from "prop-types";
 
-import { useStateContext } from "./MapStateContext";
+import { StateContext } from "./MapStateContext";
 
 const propTypes = {
   layerName: PropTypes.string,
@@ -27,7 +27,7 @@ const SatLasPolygon = props => {
 
   const isInLayer = !!layerName;
 
-  const [state, actions] = useStateContext();
+  const [state, actions] = useContext(StateContext)
 
   useEffect(() => {
     if (isInLayer) {
